@@ -1,3 +1,5 @@
+require_relative 'place'
+
 class Character
 
   attr_reader :current_place, :previous_place
@@ -17,8 +19,9 @@ class Character
   protected
 
   def raise_unless_a_place(maybe_a_place)
-    unless place.class == Place
-      raise "Expected argumemt of type #{Place.name}; got #{place.class.name}"
+    unless maybe_a_place.class == Place
+      raise "Expected argumemt of type #{Place.name}; " <<
+        "got #{maybe_a_place.class.name}"
     end
   end
 

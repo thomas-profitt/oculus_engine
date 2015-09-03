@@ -1,15 +1,19 @@
 class Place
 
-  attr_accessor :name, :description, :conditional_descriptions,
-                :entrances, :exits
+  attr_accessor :name, :descriptions, :passages
 
-  def initialize(name: nil, description: nil, conditional_descriptions: [],
-                 entrances: {}, exits: {})
+  def initialize(name: nil, descriptions: [], passages: [])
     @name = name
-    @description = description
-    @conditional_descriptions = conditional_descriptions
-    @entrances = entrances
-    @exits = exits
+    @descriptions = descriptions
+    @passages = passages
+  end
+
+  def description
+    ret = []
+    ret.push(*@descriptions.map(&:eval))
+    @passages.each { |p| ret.push(*p.descriptions.map(&:eval)) }
+
+    ret.join "\n"
   end
 
 end
