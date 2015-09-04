@@ -2,7 +2,7 @@ require_relative 'place'
 
 class Character
 
-  attr_reader :current_place, :previous_place
+  attr_reader :place, :previous_place
   attr_accessor :spawn_place
 
   def initialize(spawn_place: nil)
@@ -12,8 +12,8 @@ class Character
 
   def go(place)
     raise_unless_a_place place
-    @previous_place = @current_place
-    @current_place = place
+    @previous_place = @place
+    @place = place
   end
 
   protected

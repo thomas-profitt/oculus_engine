@@ -3,7 +3,6 @@ class Description
   attr_accessor :descriptions, :condition
 
   def initialize(*args)
-  #descriptions: {}, condition: -> () { true })
     if args.length == 1 && args[0].class == String
       # An unconditional description
       @descriptions = { true => args[0] }

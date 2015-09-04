@@ -10,7 +10,7 @@ class Place
 
   def description
     ret = []
-    ret.push(*@descriptions.map(&:eval))
+    ret.push(*@descriptions.map(&:eval).compact)
     @passages.each { |p| ret.push(*p.descriptions.map(&:eval)) }
 
     ret.join "\n"

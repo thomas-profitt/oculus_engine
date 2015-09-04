@@ -63,7 +63,11 @@ northern_peaks = Place.new(
 
 ################################################################################
 
-central_plains_north_path_unguarded = -> () { rand(100) < 20 }
+# This is brought into focus now, and its value is randomly set each turn.
+central_plains_north_path_unguarded_bool = false
+central_plains_north_path_unguarded = -> {
+  central_plains_north_path_unguarded_bool
+}
 
 ################################################################################
 
@@ -170,5 +174,13 @@ player = Player.new(
 
 ################################################################################
 
-Game.start player
+game = Game.new(player: player, before_turn: -> {
+  if rand(2) == 1
+    central_plains_north_path_unguarded_bool = true
+  else
+    central_plains_north_path_unguarded_bool = false
+  end
+})
+
+game.start
 

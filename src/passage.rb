@@ -18,5 +18,12 @@ class Passage
     @condition = condition
   end
 
+  def description
+    self.departure_descriptions.map(&:eval).compact.
+      push("...").
+      push(*self.arrival_descriptions.map(&:eval).compact).
+      join("\n")
+  end
+
 end
 
