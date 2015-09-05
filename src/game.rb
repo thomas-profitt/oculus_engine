@@ -1,22 +1,31 @@
 require 'colorize'
+require_relative 'protocols/user_interface'
+require_relative 'text_user_interface' # default user_interface
 
 class Game
 
-  attr_accessor :player, :before_turn, :after_turn
-  attr_reader :keywords
+  attr_accessor :player,         :before_turn,
+                :after_turn,     :user_interface
+
+  attr_reader   :keywords
 
   def initialize(*args)
-    if args.length == 1 && args[0].class == Player
-      @player = args[0]
+    if args.length == 2 &&
+    !args.select { |o| o.class == Player }.empty? &&
+    !args.select { |o| o.class != Player && o.conform_to?(UserInterface)}.empty?
+      @player = args.select { |o| o.class == Player }
+      @user_interface = args.select { |o| o.class != Player }
     elsif args.length == 1 && args[0].class == Hash
       @player = args[0][:player]
       @before_turn = args[0][:before_turn] if args[0][:before_turn]
       @after_turn = args[0][:after_turn] if args[0][:after_turn]
+      @user_interface = args[0][:user_interface] if args[0][:user_interface]
     else
       raise ArgumentError
     end
     @before_turn ||= -> {}
     @after_turn ||= -> {}
+    @user_interface ||= TextUserInterface.new
 
     @keywords = %w{quit wait}
   end
@@ -24,7 +33,7 @@ class Game
   def start()
     @player.go @player.spawn_place
 
-    input = ""
+    chosen_option = ""
     done = false
     redo_outer = false
     loop do
@@ -33,36 +42,21 @@ class Game
 
       before_turn.call
 
-      pretty_place_description = @player.place.description
-      pretty_place_description.split(/\W+/).each do |word|
-        @player.place.options.each do |choice|
-          if word.downcase == choice.downcase
-            pretty_place_description.gsub! word, word.light_yellow
-            # A break could go here, but that would break outermost loop too.
-          end
-        end
-      end
-
       chosen_passage = nil
 
-      print_description = true
+      describe_place = true
       loop do
-        if print_description
-          clear
-          puts @player.place.name.black.on_white
-          puts pretty_place_description
+        if describe_place
         end
 
-        print "\t> "
+        chosen_option = @user_interface.get_player_option player, @keywords
 
-        input = STDIN.gets.strip.downcase
-
-        if input.empty?
-          print_description = true
+        if chosen_option.empty?
+          describe_place = true
           redo
         end
 
-        case input
+        case chosen_option
         when "wait"
           redo_outer = true
         when "quit"
@@ -72,35 +66,27 @@ class Game
         break if done || redo_outer
 
         chosen_passage = @player.place.passages.select { |p|
-          p.option.to_sym == input.to_sym
+          p.option == chosen_option
         }.first
 
         break if chosen_passage
 
-        puts "Valid options here are:"
-        puts @player.place.options.join(", ")
-        puts @keywords.join(", ")
-        print_description = false
+        describe_place = false
 
       end
 
       break if done
       redo if redo_outer
 
-      puts chosen_passage.condition.call
       if chosen_passage.condition.call
         @player.go chosen_passage.destination
-        puts chosen_passage.description
+        @user_interface.describe_chosen_passage chosen_passage
       end
 
     end
 
     return true
 
-  end
-
-  def clear
-      puts "\e[H\e[2J"
   end
 
 end

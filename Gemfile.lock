@@ -1,0 +1,16 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    colorize (0.7.7)
+    protocol (1.0.1)
+      ruby_parser (~> 3.0)
+    ruby_parser (3.7.1)
+      sexp_processor (~> 4.1)
+    sexp_processor (4.6.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  colorize
+  protocol

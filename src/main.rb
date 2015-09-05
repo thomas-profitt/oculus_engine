@@ -174,6 +174,7 @@ player = Player.new(
 
 ################################################################################
 
+# We omit specification of a user_interface for the Game; the default works.
 game = Game.new(player: player, before_turn: -> {
   if rand(2) == 1
     central_plains_north_path_unguarded_bool = true
