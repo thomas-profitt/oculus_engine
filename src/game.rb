@@ -5,7 +5,8 @@ require_relative 'text_user_interface' # default user_interface
 class Game
 
   attr_accessor :player,         :before_turn,
-                :after_turn,     :user_interface
+                :after_turn,     :user_interface,
+                :allow_waiting
 
   attr_reader   :keywords
 
@@ -20,6 +21,10 @@ class Game
       @before_turn = args[0][:before_turn] if args[0][:before_turn]
       @after_turn = args[0][:after_turn] if args[0][:after_turn]
       @user_interface = args[0][:user_interface] if args[0][:user_interface]
+      if args[0].keys.include? :allow_waiting
+        @allow_waiting = args[0][:allow_waiting]
+        allow_waiting_provided = true
+      end
     else
       raise ArgumentError
     end
@@ -27,7 +32,9 @@ class Game
     @after_turn ||= -> {}
     @user_interface ||= TextUserInterface.new
 
-    @keywords = %w{quit exit wait}
+    @keywords = %w{quit exit}
+    @allow_waiting = true unless allow_waiting_provided
+    @keywords << "wait" if @allow_waiting
   end
 
   def start()
@@ -42,7 +49,7 @@ class Game
 
       case chosen_option
       when "wait"
-        redo
+        redo if @allow_waiting
       when "quit", "exit"
         break
       end
