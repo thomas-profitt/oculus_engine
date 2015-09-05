@@ -10,7 +10,7 @@ class Passage
   def initialize(option: nil, destination: nil,
     descriptions: [], departure_descriptions: [], arrival_descriptions: [],
     condition: -> () { true })
-    @option = option
+    @option = option.to_s.downcase
     @destination = destination
     @descriptions = descriptions
     @departure_descriptions = departure_descriptions
