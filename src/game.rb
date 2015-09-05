@@ -27,56 +27,29 @@ class Game
     @after_turn ||= -> {}
     @user_interface ||= TextUserInterface.new
 
-    @keywords = %w{quit wait}
+    @keywords = %w{quit exit wait}
   end
 
   def start()
     @player.go @player.spawn_place
 
     chosen_option = ""
-    done = false
-    redo_outer = false
     loop do
-
-      redo_outer = false if redo_outer
 
       before_turn.call
 
-      chosen_passage = nil
+      chosen_option = @user_interface.get_player_option player, @keywords
 
-      describe_place = true
-      loop do
-        if describe_place
-        end
-
-        chosen_option = @user_interface.get_player_option player, @keywords
-
-        if chosen_option.empty?
-          describe_place = true
-          redo
-        end
-
-        case chosen_option
-        when "wait"
-          redo_outer = true
-        when "quit"
-          done = true
-        end
-
-        break if done || redo_outer
-
-        chosen_passage = @player.place.passages.select { |p|
-          p.option == chosen_option
-        }.first
-
-        break if chosen_passage
-
-        describe_place = false
-
+      case chosen_option
+      when "wait"
+        redo
+      when "quit", "exit"
+        break
       end
 
-      break if done
-      redo if redo_outer
+      chosen_passage = @player.place.passages.select { |p|
+        p.option == chosen_option
+      }.first
 
       if chosen_passage.condition.call
         @player.go chosen_passage.destination
@@ -86,7 +59,6 @@ class Game
     end
 
     return true
-
   end
 
 end

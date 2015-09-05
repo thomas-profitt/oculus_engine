@@ -46,10 +46,9 @@ class TextUserInterface
 
     pretty_place_description = player.place.description
     pretty_place_description.split(/\W+/).each do |word|
-      player.place.options.each do |choice|
-        if word.downcase == choice.downcase
+      player.place.options.each do |option|
+        if word.downcase == option.downcase
           pretty_place_description.gsub! word, word.light_yellow
-          # A break could go here, but that would break outermost loop too.
         end
       end
     end
