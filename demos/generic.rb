@@ -1,8 +1,8 @@
-require_relative 'place'
-require_relative 'passage'
-require_relative 'player'
-require_relative 'description'
-require_relative 'game'
+require_relative '../src/place'
+require_relative '../src/passage'
+require_relative '../src/player'
+require_relative '../src/description'
+require_relative '../src/game'
 
 ################################################################################
 
