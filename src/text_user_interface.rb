@@ -34,7 +34,7 @@ class TextUserInterface
 
   def handle_invalid_player_option(player, keywords)
     puts "Valid options here are:"
-    puts player.place.options.join(", ")
+    puts player.place.options.map(&:light_yellow).join(", ")
     puts keywords.join(", ")
   end
 

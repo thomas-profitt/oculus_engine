@@ -16,9 +16,13 @@ class Place
     ret.join "\n"
   end
 
-  def options
+  def options(all = false)
     ret = []
-    ret.push(*@passages.map(&:option))
+    if all
+      ret.push(*@passages.map(&:option))
+    else
+      ret.push(*@passages.select { |p| p.condition.call }.map(&:option))
+    end
     ret
   end
 
