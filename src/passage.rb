@@ -3,6 +3,9 @@ class Passage
   # A passage's condition must return a truthy value, or the passage is
   # inaccessible.
 
+  #FIXME: some_passage.description
+  #       some_passage.descriptions
+
   attr_accessor :option, :destination, :descriptions,
     :departure_descriptions, :arrival_descriptions,
     :condition
