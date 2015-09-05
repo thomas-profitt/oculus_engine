@@ -16,5 +16,11 @@ class Place
     ret.join "\n"
   end
 
+  def options
+    ret = []
+    ret.push(*@passages.map(&:option))
+    ret
+  end
+
 end
 
