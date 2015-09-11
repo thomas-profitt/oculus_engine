@@ -6,7 +6,7 @@ class Game
 
   attr_accessor :player,         :before_turn,
                 :after_turn,     :user_interface,
-                :allow_waiting
+                :allow_wait
 
   attr_reader   :keywords
 
@@ -21,10 +21,12 @@ class Game
       @before_turn = args[0][:before_turn] if args[0][:before_turn]
       @after_turn = args[0][:after_turn] if args[0][:after_turn]
       @user_interface = args[0][:user_interface] if args[0][:user_interface]
-      if args[0].keys.include? :allow_waiting
-        @allow_waiting = args[0][:allow_waiting]
-        allow_waiting_provided = true
+      if args[0].keys.include? :allow_wait
+        @allow_wait = args[0][:allow_wait]
+        allow_wait_provided = true
       end
+    elsif args.length == 1 && args[0].class == Player
+      @player = args[0]
     else
       raise ArgumentError
     end
@@ -33,8 +35,8 @@ class Game
     @user_interface ||= TextUserInterface.new
 
     @keywords = %w{quit exit}
-    @allow_waiting = true unless allow_waiting_provided
-    @keywords << "wait" if @allow_waiting
+    @allow_wait = true unless allow_wait_provided
+    @keywords << "wait" if @allow_wait
   end
 
   def start()
@@ -49,7 +51,7 @@ class Game
 
       case chosen_option
       when "wait"
-        redo if @allow_waiting
+        redo if @allow_wait
       when "quit", "exit"
         break
       end
