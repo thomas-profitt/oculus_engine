@@ -37,12 +37,14 @@ class TextUserInterface
 
   def handle_invalid_player_option(player, keywords)
     puts "Valid options here are:"
-    puts player.page.options.map(&:light_yellow).join(", ")
+    if !player.page.options.empty?
+      puts player.page.options.map(&:light_yellow).join(", ")
+    end
     puts keywords.join(", ")
   end
 
   def clear
-      puts "\e[H\e[2J"
+      print "\e[H\e[2J"
   end
 
   def player_page_description(player)
@@ -56,8 +58,8 @@ class TextUserInterface
       end
     end
 
-    ret = player.page.name.black.on_white
-    ret += "\n" << pretty_page_description
+    ret = player.page.name ? player.page.name.black.on_white << "\n" : ""
+    ret << pretty_page_description
   end
 
 
