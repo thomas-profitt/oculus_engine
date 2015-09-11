@@ -2,10 +2,28 @@ class Page
 
   attr_accessor :name, :descriptions, :passages
 
-  def initialize(name: nil, descriptions: [], passages: [])
-    @name = name
-    @descriptions = descriptions
-    @passages = passages
+  def initialize(*args)
+    case args.length
+    when 1
+      if args[0].class == Hash
+        @name = args[0][:name] || nil
+        @descriptions = args[0][:descriptions] || []
+        @passages = args[0][:passages] || []
+      elsif args[0].class == String
+        @name = args[0]
+      elsif args[0].class == Array &&
+      args[0].map(&:class).unique == [Description]
+        @descriptions = args[0]
+      else
+        raise ArgumentError, "When one arg is provided, it must be a "<<
+          "Hash, String or Array of Descriptions"
+      end
+    end
+
+    @name ||= nil
+    @descriptions ||= []
+    @passages ||= []
+
   end
 
   def description
