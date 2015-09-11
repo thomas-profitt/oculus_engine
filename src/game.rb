@@ -38,7 +38,7 @@ class Game
   end
 
   def start()
-    @player.go @player.spawn_place
+    @player.go @player.spawn_page
 
     chosen_option = ""
     loop do
@@ -54,7 +54,7 @@ class Game
         break
       end
 
-      chosen_passage = @player.place.passages.select { |p|
+      chosen_passage = @player.page.passages.select { |p|
         p.option == chosen_option
       }.first
 

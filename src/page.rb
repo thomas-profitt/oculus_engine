@@ -1,4 +1,4 @@
-class Place
+class Page
 
   attr_accessor :name, :descriptions, :passages
 

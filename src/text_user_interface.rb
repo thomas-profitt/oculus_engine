@@ -7,7 +7,7 @@ class TextUserInterface
   def get_player_option(player, keywords)
     # Loop until we get a valid option from the player
     input = nil
-    description = player_place_description player
+    description = player_page_description player
     print_description_next_iteration = true
     loop do
       if print_description_next_iteration
@@ -18,7 +18,7 @@ class TextUserInterface
       print "\t> "
       input = STDIN.gets.strip.downcase
 
-      break if player.place.options.include?(input) || keywords.include?(input)
+      break if player.page.options.include?(input) || keywords.include?(input)
 
       handle_invalid_player_option(player, keywords)
       print_description_next_iteration = false
@@ -34,7 +34,7 @@ class TextUserInterface
 
   def handle_invalid_player_option(player, keywords)
     puts "Valid options here are:"
-    puts player.place.options.map(&:light_yellow).join(", ")
+    puts player.page.options.map(&:light_yellow).join(", ")
     puts keywords.join(", ")
   end
 
@@ -42,19 +42,19 @@ class TextUserInterface
       puts "\e[H\e[2J"
   end
 
-  def player_place_description(player)
+  def player_page_description(player)
 
-    pretty_place_description = player.place.description
-    pretty_place_description.split(/\W+/).each do |word|
-      player.place.options.each do |option|
+    pretty_page_description = player.page.description
+    pretty_page_description.split(/\W+/).each do |word|
+      player.page.options.each do |option|
         if word.downcase == option.downcase
-          pretty_place_description.gsub! word, word.light_yellow
+          pretty_page_description.gsub! word, word.light_yellow
         end
       end
     end
 
-    ret = player.place.name.black.on_white
-    ret += "\n" << pretty_place_description
+    ret = player.page.name.black.on_white
+    ret += "\n" << pretty_page_description
   end
 
 

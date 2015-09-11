@@ -1,4 +1,4 @@
-require_relative '../src/place'
+require_relative '../src/page'
 require_relative '../src/passage'
 require_relative '../src/player'
 require_relative '../src/description'
@@ -10,7 +10,7 @@ its_night = -> () { Time.now.hour >= 8 || Time.now.hour <= 6 }
 
 ################################################################################
 
-central_plains = Place.new(
+central_plains = Page.new(
   name: "Central Plains",
   descriptions: [
     Description.new(
@@ -40,7 +40,7 @@ central_plains = Place.new(
   ]
 )
 
-western_village = Place.new(
+western_village = Page.new(
   name: "Western Village",
   descriptions: [
     Description.new("The village has a description."),
@@ -51,7 +51,7 @@ western_village = Place.new(
   ]
 )
 
-northern_peaks = Place.new(
+northern_peaks = Page.new(
   name: "Northern Peaks",
   descriptions: [
     Description.new(
@@ -64,6 +64,8 @@ northern_peaks = Place.new(
 ################################################################################
 
 # This is brought into focus now, and its value is randomly set each turn.
+# A mechanism like attaching a "turn_roll" to Game, and using that in lieu
+# of rand() and callbacks, would be great
 central_plains_north_path_unguarded_bool = false
 central_plains_north_path_unguarded = -> {
   central_plains_north_path_unguarded_bool
@@ -161,7 +163,7 @@ northern_peaks.passages << Passage.new(
 =begin we're not here yet!
 central_plains_north_path_guard = Character.new(
   name: "Guard",
-  spawn_place: central_plains,
+  spawn_page: central_plains,
   spawn_condition: -> () { rand(2) == 1 }
 )
 =end
@@ -169,7 +171,7 @@ central_plains_north_path_guard = Character.new(
 #-------------------------------------------------------------------------------
 
 player = Player.new(
-  spawn_place: central_plains
+  spawn_page: central_plains
 )
 
 ################################################################################
