@@ -1,5 +1,8 @@
+require 'readline'
+
 require 'protocol'
 require 'colorize'
+
 require_relative 'protocols/user_interface'
 
 class TextUserInterface
@@ -15,8 +18,8 @@ class TextUserInterface
       else
         print_description_next_iteration = true
       end
-      print "\t> "
-      input = STDIN.gets.strip.downcase
+
+      input = Readline.readline("\t> ", true)
 
       break if player.page.options.include?(input) || keywords.include?(input)
 
