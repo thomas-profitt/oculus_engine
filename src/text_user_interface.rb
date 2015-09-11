@@ -14,7 +14,7 @@ class TextUserInterface
     print_description_next_iteration = true
     loop do
       if print_description_next_iteration
-        clear ; puts description
+        puts description
       else
         print_description_next_iteration = true
       end
@@ -41,10 +41,6 @@ class TextUserInterface
       puts player.page.options.map(&:light_yellow).join(", ")
     end
     puts keywords.join(", ")
-  end
-
-  def clear
-      print "\e[H\e[2J"
   end
 
   def player_page_description(player)
