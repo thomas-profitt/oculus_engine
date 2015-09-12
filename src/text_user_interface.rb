@@ -45,13 +45,33 @@ class TextUserInterface
 
   def player_page_description(player)
 
-    pretty_page_description = player.page.description
-    pretty_page_description.split(/\W+/).each do |word|
+    words_to_replace = []
+    page_description = player.page.description
+    # Eval it only once and store the result
+
+    page_description.split(/\W+/).each do |word|
       player.page.options.each do |option|
         if word.downcase == option.downcase
-          pretty_page_description.gsub! word, word.light_yellow
+          words_to_replace << word
         end
       end
+    end
+
+    words_to_replace.uniq!
+
+    # Regexp.new("([])") would cause a RegexpError
+    unless words_to_replace.empty?
+      regexp_string =
+        "(" << words_to_replace.map { |s| "(#{s})" }.join("|") << ")"
+      pretty_page_description =
+        page_description.
+        gsub(
+          Regexp.new(regexp_string, true),
+          '\1'.light_yellow)
+          # The gsub must be done all at once, or it could gsub parts of the
+          # color-formatted parts of the string and mangle it.
+    else
+      pretty_page_description = page_description
     end
 
     ret = player.page.name ? player.page.name.black.on_white << "\n" : ""
