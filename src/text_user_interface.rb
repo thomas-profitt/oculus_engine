@@ -30,10 +30,15 @@ class TextUserInterface
   end
 
   def describe_chosen_passage(chosen_passage)
+    clear
     puts chosen_passage.description
   end
 
   private
+
+  def clear
+    puts "\e[H\e[2J"
+  end
 
   def handle_invalid_player_option(player, keywords)
     puts "Valid options here are:"
