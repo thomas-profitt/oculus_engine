@@ -15,7 +15,7 @@ class Page
       args[0].map(&:class).unique == [Description]
         @descriptions = args[0]
       else
-        raise ArgumentError, "When one arg is provided, it must be a "<<
+        raise TypeError, "When one argument is provided, it must be a "<<
           "Hash, String or Array of Descriptions"
       end
     end

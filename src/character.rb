@@ -14,7 +14,8 @@ class Character
         raise_unless_a_page args[0][:spawn_page]
         @spawn_page = args[0][:spawn_page]
       else
-        raise ArgumentError
+        raise TypeError, "When one argument is provided, it must be a Page " <<
+          "or a Hash with a Page as the value of the :spawn_page key."
       end
     end
   end
@@ -29,7 +30,7 @@ class Character
 
   def raise_unless_a_page(maybe_a_page)
     unless maybe_a_page.class == Page
-      raise "Expected argumemt of type #{Page.name}; " <<
+      raise TypeError, "Expected argumemt of type #{Page.name}; " <<
         "got #{maybe_a_page.class.name}"
     end
   end
