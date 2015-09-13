@@ -1,8 +1,4 @@
-require_relative '../src/page'
-require_relative '../src/passage'
-require_relative '../src/player'
-require_relative '../src/description'
-require_relative '../src/game'
+require_relative '../oculus'
 
 ################################################################################
 
