@@ -3,7 +3,7 @@ require 'readline'
 require 'protocol'
 require 'colorize'
 
-require_relative 'protocols/user_interface'
+require_relative '../protocols/user_interface'
 
 class TextUserInterface
 

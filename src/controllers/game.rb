@@ -1,6 +1,6 @@
 require 'colorize'
-require_relative 'protocols/user_interface'
-require_relative 'text_user_interface' # default user_interface
+require_relative '../protocols/user_interface'
+require_relative '../views/text_user_interface' # default user_interface
 
 class Game
 
