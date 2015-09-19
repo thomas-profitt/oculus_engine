@@ -12,5 +12,5 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  colorize
-  protocol
+  colorize (~> 0.7.7)
+  protocol (~> 1.0.1)
