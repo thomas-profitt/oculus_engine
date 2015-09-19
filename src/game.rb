@@ -1,4 +1,5 @@
 require 'colorize'
+require 'numeric_range_utils'
 require_relative 'protocols/user_interface'
 require_relative 'text_user_interface' # default user_interface
 
@@ -8,7 +9,7 @@ class Game
                 :after_turn,     :user_interface,
                 :allow_wait
 
-  attr_reader   :keywords
+  attr_reader   :keywords,       :turn_rand
 
   def initialize(*args)
     if args.length == 2 &&
@@ -37,6 +38,7 @@ class Game
     @keywords = %w{quit exit}
     @allow_wait = true unless allow_wait_provided
     @keywords << "wait" if @allow_wait
+    @turn_rand = rand
   end
 
   def start()
@@ -44,6 +46,7 @@ class Game
 
     chosen_option = ""
     loop do
+      @turn_rand = rand
 
       before_turn.call
 
@@ -69,6 +72,11 @@ class Game
     end
 
     return true
+  end
+
+  def turn_rand(values = nil)
+    return @turn_rand unless values
+    NumericRangeUtils.shift_proportions(@turn_rand, 0..1, (0..values - 1)).round
   end
 
 end

@@ -1,3 +1,9 @@
+GIT
+  remote: https://github.com/thomas-profitt/numeric-range-utils.git
+  revision: ee2a4c2734a0ab7a254c830e0872888fd77785c6
+  specs:
+    numeric-range-utils (0.0.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -13,4 +19,5 @@ PLATFORMS
 
 DEPENDENCIES
   colorize (~> 0.7.7)
+  numeric-range-utils!
   protocol (~> 1.0.1)
