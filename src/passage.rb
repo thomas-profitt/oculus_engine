@@ -8,17 +8,18 @@ class Passage
 
   attr_accessor :option, :destination, :descriptions,
     :departure_descriptions, :arrival_descriptions,
-    :condition
+    :condition, :after_departure
 
   def initialize(option: nil, destination: nil,
     descriptions: [], departure_descriptions: [], arrival_descriptions: [],
-    condition: -> () { true })
+    condition: -> () { true }, after_departure: -> () { })
     @option = option.to_s.downcase
     @destination = destination
     @descriptions = descriptions
     @departure_descriptions = departure_descriptions
     @arrival_descriptions = arrival_descriptions
     @condition = condition
+    @after_departure = after_departure
   end
 
   def description

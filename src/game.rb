@@ -63,6 +63,7 @@ class Game
       if chosen_passage.condition.call
         @player.go chosen_passage.destination
         @user_interface.describe_chosen_passage chosen_passage
+        chosen_passage.after_departure.call
       end
 
     end
