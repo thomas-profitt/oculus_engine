@@ -32,8 +32,12 @@ choose_a_character.descriptions << Description.new(
 )
 
 mountain.descriptions << Description.new(
+  condition: -> () { [game.player, (game.turn_rand(100) < 30 )] },
   descriptions: {
-    manly_party =>
+    [manly_party, true] =>
+      "#{manly_party_name} in the house. Dragon? What dragon..? " <<
+      "(because your party killed the dragon)",
+    [manly_party, false] =>
       "#{manly_party_name} have arrived... " <<
       "Zerthrax the Summoner's incantation is interrupted by a tail sweep, " <<
       "his Staff of Nineteen Hells shattered! " <<
@@ -42,12 +46,16 @@ mountain.descriptions << Description.new(
       "finishing the scaled demon off. " <<
       "Chuck'thar helped by thinking up a cool phrase to say afterward..." <<
       "\n\"Ain't misbehavin'.\"",
-    pansy_party =>
+    [pansy_party, true] =>
+      "It's pretty ugly. You don't want to know. " <<
+      "I mean, there's a *lot* of screaming..." <<
+      " Well, #{pansy_party_name} *did try*...",
+    [pansy_party, false] =>
       "It's pretty ugly. You don't want to know. " <<
       "I mean, there's a *lot* of screaming...",
-    initial => "You're still.. no one?"
-  },
-  condition: -> () { game.player }
+    [initial, true] => "You're still.. no one?",
+    [initial, false] => "You're still.. no one?"
+  }
 )
 
 party.descriptions << Description.new(
@@ -77,6 +85,7 @@ choose_a_character.passages << Passage.new(
   ],
   destination: mountain,
   after_departure: -> () {
+    # Swap game's player with manly_party
     pansy_party.go game.player.page
     game.player = pansy_party
   }
@@ -92,6 +101,7 @@ choose_a_character.passages << Passage.new(
   ],
   destination: mountain,
   after_departure: -> () {
+    # Swap game's player with manly_party
     manly_party.go game.player.page
     game.player = manly_party
   }
@@ -156,6 +166,5 @@ party.passages << Passage.new(
 )
 
 #initialize game and start######################################################
-
 game.start
 

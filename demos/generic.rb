@@ -2,7 +2,18 @@ require_relative '../oculus'
 
 ################################################################################
 
-its_night = -> () { Time.now.hour >= 8 || Time.now.hour <= 6 }
+player = Player.new
+
+# We omit specification of a user_interface for the Game; the default works.
+game = Game.new(player: player)
+
+################################################################################
+
+its_night = -> () { Time.now.hour >= 20 || Time.now.hour <= 6 }
+
+central_plains_north_path_unguarded = -> {
+  game.turn_rand(100) < 40
+}
 
 ################################################################################
 
@@ -31,7 +42,7 @@ central_plains = Page.new(
           "having stolen a ripe plum from a tree."
       },
       condition:
-        -> () { [(rand(100) < 40), its_night.call] }
+        -> () { [(game.turn_rand(100) < 40), its_night.call] }
     )
   ]
 )
@@ -42,7 +53,7 @@ western_village = Page.new(
     Description.new("The village has a description."),
     Description.new(
       "Something with an 80% chance to happen is happening.",
-      -> () { rand(100) < 80 }
+      -> () { game.turn_rand(100) < 80 }
     )
   ]
 )
@@ -59,13 +70,7 @@ northern_peaks = Page.new(
 
 ################################################################################
 
-# This is brought into focus now, and its value is randomly set each turn.
-# A mechanism like attaching a "turn_roll" to Game, and using that in lieu
-# of rand() and callbacks, would be great
-central_plains_north_path_unguarded_bool = false
-central_plains_north_path_unguarded = -> {
-  central_plains_north_path_unguarded_bool
-}
+player.spawn_page = central_plains
 
 ################################################################################
 
@@ -133,7 +138,7 @@ western_village.passages << Passage.new(
 #-------------------------------------------------------------------------------
 
 northern_peaks.passages << Passage.new(
-  option: :south,
+  option: :arch,
   destination: central_plains,
   descriptions: [
     Description.new(
@@ -160,26 +165,13 @@ northern_peaks.passages << Passage.new(
 central_plains_north_path_guard = Character.new(
   name: "Guard",
   spawn_page: central_plains,
-  spawn_condition: -> () { rand(2) == 1 }
+  spawn_condition: -> () { game.turn_rand(2) == 1 }
 )
 =end
 
 #-------------------------------------------------------------------------------
 
-player = Player.new(
-  spawn_page: central_plains
-)
-
 ################################################################################
-
-# We omit specification of a user_interface for the Game; the default works.
-game = Game.new(player: player, before_turn: -> {
-  if rand(2) == 1
-    central_plains_north_path_unguarded_bool = true
-  else
-    central_plains_north_path_unguarded_bool = false
-  end
-})
 
 game.start
 
