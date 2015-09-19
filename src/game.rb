@@ -1,5 +1,4 @@
 require 'colorize'
-require 'numeric_range_utils'
 require_relative 'protocols/user_interface'
 require_relative 'text_user_interface' # default user_interface
 
