@@ -2,8 +2,8 @@ require_relative 'page'
 
 class Character
 
+  attr_accessor :spawn_page, :inventory, :equipment
   attr_reader :page, :previous_page
-  attr_accessor :spawn_page
 
   def initialize(*args)
     case args.length
@@ -13,6 +13,11 @@ class Character
       elsif args[0].class == Hash
         raise_unless_a_page args[0][:spawn_page]
         @spawn_page = args[0][:spawn_page]
+        @inventory = args[0][:inventory] if args[0].keys.include? :inventory
+        @equipment = args[0][:equipment] if args[0].keys.include? :equipment
+        if @inventory.class != Inventory || @equipment.class != Equipment
+          raise TypeError
+        end
       else
         raise TypeError, "When one argument is provided, it must be a Page " <<
           "or a Hash with a Page as the value of the :spawn_page key."
