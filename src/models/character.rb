@@ -11,8 +11,10 @@ class Character
       if args[0].class == Page
         @spawn_page = args[0]
       elsif args[0].class == Hash
-        raise_unless_a_page args[0][:spawn_page]
-        @spawn_page = args[0][:spawn_page]
+        if args[0][:spawn_page]
+          raise_unless_a_page args[0][:spawn_page]
+          @spawn_page = args[0][:spawn_page]
+        end
         @inventory = args[0][:inventory] if args[0].keys.include? :inventory
         @equipment = args[0][:equipment] if args[0].keys.include? :equipment
         if @inventory.class != Inventory || @equipment.class != Equipment

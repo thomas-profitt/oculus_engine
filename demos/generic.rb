@@ -2,14 +2,17 @@ require_relative '../oculus'
 
 ################################################################################
 
-player = Player.new
+player = Player.new(
+  inventory: Inventory.new(10),
+  equipment: Equipment.new(:main_hand)
+)
 
 # We omit specification of a user_interface for the Game; the default works.
 game = Game.new(player: player)
 
 ################################################################################
 
-its_night = -> () { Time.now.hour >= 20 || Time.now.hour <= 6 }
+its_night = -> { Time.now.hour >= 20 || Time.now.hour <= 6 }
 
 central_plains_north_path_unguarded = -> {
   game.turn_rand(100) < 40
@@ -22,7 +25,7 @@ central_plains = Page.new(
   descriptions: [
     Description.new(
       "Boundless green grass and hearty summer grain roll with a " <<
-        "constant easy breeze.",
+        "constant easy breeze."
     ),
     Description.new(
       descriptions: {
@@ -55,6 +58,46 @@ western_village = Page.new(
       "Something with an 80% chance to happen is happening.",
       -> () { game.turn_rand(100) < 80 }
     )
+  ],
+  page_items: [
+    PageItem.new(
+      item: Item.new(name: "Stone", slots: 1),
+      description: Description.new(
+        "A particularly smooth stone lies by your feet."
+      )
+    ),
+    PageItem.new(
+      item: Item.new(name: "Stone", slots: 1),
+      description: Description.new(
+        "Another stone catches your eye, sitting atop a crate."
+      )
+    ),
+    PageItem.new(
+      item: Item.new(name: "Massive Pumpkin", slots: 9),
+      description: Description.new(
+        '"Best in Show," reads the ribbon on a massive pumpkin.'
+      )
+    ),
+    PageItem.new(
+      item: Item.new(name: "Apple", slots: 2),
+      description: Description.new(
+        "A tasty apple, the last on a tree, hangs above."
+      )
+    ),
+    PageItem.new(
+      item: EquippableItem.new(
+        name: "Sword",
+        slots: 4,
+        equipment_slot: :main_hand,
+        descriptions: [
+          Description.new(
+            "The worn but not abandoned sword *looks* like it can still cut.")
+        ]
+      ),
+      description: Description.new(
+        "A standard-issue sword hangs from a rack."
+      )
+    ),
   ]
 )
 

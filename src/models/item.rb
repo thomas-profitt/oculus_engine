@@ -1,6 +1,6 @@
 class Item
 
-  attr_accessor :name, :short_name, :slots
+  attr_accessor :name, :short_name, :slots, :descriptions
 
   def initialize(*args)
     case args.length
@@ -20,9 +20,13 @@ class Item
         if args[0].keys.include?(:slots) && args[0][:slots].class == Fixnum
           @slots = args[0][:slots]
         end
+        if args[0].keys.include?(:descriptions)
+          @descriptions = args[0][:descriptions]
+        end
       end
     end
     @slots ||= 1
+    @short_name ||= @name.downcase if @name.respond_to?(:downcase)
   end
 
 end

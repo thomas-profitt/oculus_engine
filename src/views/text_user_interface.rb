@@ -34,7 +34,32 @@ class TextUserInterface
     puts chosen_passage.description
   end
 
-  private
+  def describe_trying_to_add_item_to_inventory(item, inventory, successful)
+    if successful
+      puts "You put #{item.name} into your inventory."
+    else
+      puts "You could not fit #{item.name} into your inventory."
+    end
+  end
+
+  def describe_inventory(inventory)
+    puts "-----Inventory"
+    puts "#{inventory.used_slots}/#{inventory.max_slots} slots used"
+    puts "-----"
+    puts "slots | Item"
+    inventory.items.each do |item|
+      puts "#{"%6d" % item.slots}| #{item.name}"
+    end
+    puts
+  end
+
+  def inspect_item(item)
+    if item.descriptions
+      puts item.descriptions.map(&:eval).join("\n")
+    end
+  end
+
+  private ######################################################################
 
   def clear
     puts "\e[H\e[2J"
@@ -62,7 +87,13 @@ class TextUserInterface
       end
     end
 
+    words_to_replace.push(
+      *player.page.page_items.map(&:item).
+        map { |i| [i.short_name, i.name] }.flatten
+    )
+
     words_to_replace.uniq!
+
 
     # Regexp.new("([])") would cause a RegexpError
     unless words_to_replace.empty?

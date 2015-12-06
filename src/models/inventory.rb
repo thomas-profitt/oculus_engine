@@ -27,4 +27,13 @@ class Inventory
     @max_slots - used_slots
   end
 
+  def try_to_add(item)
+    if unused_slots >= item.slots
+      @items << item
+      return true
+    else
+      return false
+    end
+  end
+
 end

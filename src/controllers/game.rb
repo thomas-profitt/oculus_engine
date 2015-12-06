@@ -35,20 +35,25 @@ class Game
     @after_turn ||= -> {}
     @user_interface ||= TextUserInterface.new
 
-    @keywords = %w{quit exit}
+    @keywords = %w{quit exit inventory}
     @allow_wait = true unless allow_wait_provided
     @keywords << "wait" if @allow_wait
     @turn_rand = rand
   end
 
-  def start()
+  def start
     @player.go @player.spawn_page
 
     chosen_option = ""
+    new_turn = true
     loop do
-      @turn_rand = rand
+      if new_turn
+        @turn_rand = rand
 
-      before_turn.call
+        before_turn.call
+      else
+        new_turn = true
+      end
 
       chosen_option = @user_interface.get_player_option player, @keywords
 
@@ -63,10 +68,35 @@ class Game
         p.option == chosen_option
       }.first
 
-      if chosen_passage.condition.call
-        @player.go chosen_passage.destination
-        @user_interface.describe_chosen_passage chosen_passage
-        chosen_passage.after_departure.call
+      if chosen_passage
+        if chosen_passage.condition.call
+          @player.go chosen_passage.destination
+          @user_interface.describe_chosen_passage chosen_passage
+          chosen_passage.after_departure.call
+        end
+      elsif chosen_option =~ /\Aget .*\z/ || chosen_option =~ /\Ainspect .*\z/
+        chosen_option[/\A(.*) /] and chosen_verb = $1
+        chosen_item_name = chosen_option.split(/\A#{chosen_verb} /).last
+        chosen_page_item = @player.page.page_items.select { |pi|
+          [pi.item.short_name.downcase, pi.item.name.downcase].
+            include?(chosen_item_name.downcase)
+        }.first
+        chosen_item = chosen_page_item.item
+        if chosen_verb == "get"
+          successful = @player.inventory.try_to_add(chosen_item)
+          @user_interface.describe_trying_to_add_item_to_inventory(
+            chosen_item,
+            @player.inventory,
+            successful
+          )
+          @player.page.page_items.delete chosen_page_item if successful
+        elsif chosen_verb == "inspect"
+          @user_interface.inspect_item(chosen_item)
+        end
+        new_turn = false
+      elsif chosen_option == "inventory"
+        @user_interface.describe_inventory(@player.inventory)
+        new_turn = false
       end
 
     end

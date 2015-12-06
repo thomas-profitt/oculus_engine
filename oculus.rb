@@ -8,6 +8,7 @@
   models/item
   models/equipment
   models/equippable_item
+  models/page_item
   views/text_user_interface
   controllers/game
   protocols/user_interface
