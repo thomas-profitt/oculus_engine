@@ -20,7 +20,7 @@ class Inventory
   end
 
   def used_slots
-    @items.map(&:slots).inject(:+)
+    @items.map(&:slots).inject(:+) || 0
   end
 
   def unused_slots
