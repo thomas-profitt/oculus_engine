@@ -42,15 +42,74 @@ class TextUserInterface
     end
   end
 
-  def describe_inventory(inventory)
+  def inventory_and_equipment_menu(player)
+    inventory = player.inventory
+    equipment = player.equipment
     puts "-----Inventory"
     puts "#{inventory.used_slots}/#{inventory.max_slots} slots used"
     puts "-----"
-    puts "slots | Item"
+    puts "slots | Item (equipment slot)"
     inventory.items.each do |item|
-      puts "#{"%6d" % item.slots}| #{item.name}"
+      row = "#{"%6d" % item.slots}| #{item.name}"
+      if item.respond_to?(:equipment_slot)
+        row << " (#{item.equipment_slot})"
+      end
+      puts row
     end
-    puts
+    puts "-----"
+    puts "-----Equipment"
+    equipment.slots.each do |slot, item|
+    puts "#{slot}: #{item.respond_to?(:name) ? item.name : "<Empty>"}"
+    end
+    puts "-----"
+    puts "[equip, unequip, put, exit]: "
+    while input = gets.strip
+      break if input.downcase == "exit"
+      match_data = input.match(/\A(equip|unequip|put) (.*)\z/)
+      input_verb = match_data[1]
+      input_item = match_data[2]
+      case input_verb
+      when "equip"
+        item = inventory.items.select do |i|
+          [i.name.downcase, i.short_name.downcase].include? input_item
+        end.first
+        unless item
+          puts "\"#{input_item}\" not found"
+          return false
+        end
+        unless item.is_a?(EquippableItem) &&
+        equipment.slots.keys.include?(item.equipment_slot)
+          puts "\"#{input_item}\" is not equippable."
+        end
+        equipment.slots[item.equipment_slot] = item
+        inventory.items.delete item
+        inventory_and_equipment_menu(player)
+      when "unequip"
+        item = equipment.items.select do |i|
+          [i.name.downcase, i.short_name.downcase].include? input_item
+        end.first
+        unless item
+          puts "\"#{input_item}\" not found"
+          return false
+        end
+        if inventory.try_to_add item
+          puts "\"#{item.name}\" unequipped and added to inventory"
+        else
+          puts "\"There's not enough room in your inventory for #{item.name}.\""
+        end
+      when "put"
+        item = inventory.items.select do |i|
+          [i.name.downcase, i.short_name.downcase].include? input_item
+        end.first
+        inventory.items.delete item
+        player.page.page_items << PageItem.new(
+          item: item,
+          description: Description.new("You placed #{item.name} here.")
+        )
+      when "exit"
+        return
+      end
+    end
   end
 
   def inspect_item(item)

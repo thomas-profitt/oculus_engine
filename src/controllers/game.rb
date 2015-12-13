@@ -35,7 +35,7 @@ class Game
     @after_turn ||= -> {}
     @user_interface ||= TextUserInterface.new
 
-    @keywords = %w{quit exit inventory}
+    @keywords = %w{quit exit inventory equipment}
     @allow_wait = true unless allow_wait_provided
     @keywords << "wait" if @allow_wait
     @turn_rand = rand
@@ -75,12 +75,18 @@ class Game
           chosen_passage.after_departure.call
         end
       elsif chosen_option =~ /\Aget .*\z/ || chosen_option =~ /\Ainspect .*\z/
-        chosen_option[/\A(.*) /] and chosen_verb = $1
-        chosen_item_name = chosen_option.split(/\A#{chosen_verb} /).last
+        match_data = chosen_option.match(/\A(get|inspect) (.*)\z/)
+        chosen_verb = match_data[1]
+        chosen_item_name = match_data[2]
         chosen_page_item = @player.page.page_items.select { |pi|
           [pi.item.short_name.downcase, pi.item.name.downcase].
             include?(chosen_item_name.downcase)
         }.first
+        unless chosen_page_item
+          # TODO: user_interface should do this part
+          new_turn = false
+          redo
+        end
         chosen_item = chosen_page_item.item
         if chosen_verb == "get"
           successful = @player.inventory.try_to_add(chosen_item)
@@ -94,8 +100,8 @@ class Game
           @user_interface.inspect_item(chosen_item)
         end
         new_turn = false
-      elsif chosen_option == "inventory"
-        @user_interface.describe_inventory(@player.inventory)
+      elsif chosen_option == "inventory" || chosen_option == "equipment"
+        @user_interface.inventory_and_equipment_menu(@player)
         new_turn = false
       end
 

@@ -11,7 +11,7 @@ UserInterfaceProtocol = Protocol do
   def describe_trying_to_add_item_to_inventory(item, inventory, successful)
   end
 
-  def describe_inventory(inventory)
+  def inventory_and_equipment_menu(player)
   end
 
   def inspect_item(item)

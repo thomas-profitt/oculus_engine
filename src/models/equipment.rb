@@ -12,4 +12,8 @@ class Equipment
     slot_names.each { |name| @slots[name.downcase.to_sym] = nil }
   end
 
+  def items
+    @slots.values
+  end
+
 end
